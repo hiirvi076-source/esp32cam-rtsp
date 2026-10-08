@@ -37,12 +37,15 @@ jobs:
           cp .pio/build/esp32cam_ai_thinker/firmware.bin \
              release/firmware.bin
 
-          find .pio/build/esp32cam_ai_thinker \
-            -type f -name "*.bin" \
-            ! -name "firmware.bin" \
-            -exec cp {} release/ \;
+          cp .pio/build/esp32cam_ai_thinker/bootloader.bin \
+             release/bootloader.bin
 
-          echo
+          cp .pio/build/esp32cam_ai_thinker/partitions.bin \
+             release/partitions.bin
+
+          cp ~/.platformio/packages/framework-arduinoespressif32/tools/partitions/boot_app0.bin \
+             release/boot_app0.bin
+
           echo "=== FILES FOR DOWNLOAD ==="
           ls -lh release/
 
