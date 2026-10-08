@@ -1,0 +1,38 @@
+name: Build AI-Thinker ESP32-CAM
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Build AI-Thinker
+        run: pio run -e esp32cam_ai_thinker
+
+      - name: Collect firmware
+        run: |
+          mkdir -p release
+          cp .pio/build/esp32cam_ai_thinker/firmware.bin release/firmware.bin
+          cp .pio/build/esp32cam_ai_thinker/partitions.bin release/partitions.bin 2>/dev/null || true
+          cp .pio/build/esp32cam_ai_thinker/bootloader.bin release/bootloader.bin 2>/dev/null || true
+          cp .pio/build/esp32cam_ai_thinker/boot_app0.bin release/boot_app0.bin 2>/dev/null || true
+          cp partitions/ota.csv release/ota.csv
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v6
+        with:
+          name: esp32cam_ai_thinker
+          path: release/
